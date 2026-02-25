@@ -15,15 +15,15 @@
     display:inline-flex;align-items:center;gap:8px;
     padding:10px 12px;border-radius:12px;
     border:1px solid rgba(0,0,0,.12);
-    background:#fff; text-decoration:none; cursor:pointer;
-    font-weight:600; font-size:14px;
+    background:#fff;text-decoration:none;cursor:pointer;
+    font-weight:600;font-size:14px;
   }
   .al-btn.primary{background:#0b5fff;color:#fff;border-color:#0b5fff}
   .al-btn.danger{background:#ffefef;border-color:#f2b8b8}
   .al-btn.ghost{background:transparent}
   .al-card{
     background:#fff;border:1px solid rgba(0,0,0,.08);
-    border-radius:16px; padding:14px;
+    border-radius:16px;padding:14px;
     box-shadow:0 10px 30px rgba(0,0,0,.06);
   }
   .al-toolbar{
@@ -33,7 +33,7 @@
     display:flex;gap:10px;flex-wrap:wrap;align-items:center;flex:1
   }
   .al-input{
-    flex:1; min-width:260px;
+    flex:1;min-width:260px;
     padding:11px 12px;border-radius:12px;
     border:1px solid rgba(0,0,0,.12);
     outline:none;
@@ -46,7 +46,7 @@
     font-size:13px
   }
   .al-tableWrap{
-    margin-top:12px; overflow:auto;
+    margin-top:12px;overflow:auto;
     border:1px solid rgba(0,0,0,.08);
     border-radius:14px;
   }
@@ -56,7 +56,6 @@
     text-align:left;
     padding:12px;
     font-size:13px;
-    letter-spacing:.02em;
     text-transform:uppercase;
     opacity:.8;
     white-space:nowrap;
@@ -69,16 +68,47 @@
   .al-name{font-weight:750}
   .al-muted{opacity:.7}
   .al-rowActions{display:flex;gap:8px;flex-wrap:wrap}
-  .al-alert{
-    border-radius:14px;padding:10px 12px;margin-bottom:12px
+  .al-empty{text-align:center;padding:18px;opacity:.75}
+
+  /* ===== Pagination đẹp (không Bootstrap) ===== */
+  .pagination{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    list-style:none !important;
+    padding:0 !important;
+    margin:16px 0 0 !important;
   }
-  .al-alert.ok{background:#eaffea;border:1px solid #bfe7bf}
-  .al-alert.err{background:#ffecec;border:1px solid #f2b8b8}
-  .al-empty{
-    text-align:center; padding:18px; opacity:.75
+  .pagination li{list-style:none !important;}
+  .pagination a,
+  .pagination span{
+    display:inline-flex !important;
+    align-items:center;
+    justify-content:center;
+    min-width:38px;
+    height:38px;
+    padding:0 12px;
+    border-radius:12px;
+    border:1px solid rgba(0,0,0,.12);
+    text-decoration:none !important;
+    font-weight:700;
+    background:#fff;
+    color:#111;
+  }
+  .pagination .active span{
+    background:#0b5fff;
+    border-color:#0b5fff;
+    color:#fff;
+  }
+  .pagination .disabled span{
+    opacity:.4;
+  }
+  .pagination svg{
+    width:16px !important;
+    height:16px !important;
   }
 
-  /* Responsive tweak */
   @media (max-width: 900px){
     .al-title{font-size:28px}
     .al-input{min-width:200px}
@@ -87,7 +117,6 @@
 
 <div class="al-wrap">
 
-  {{-- Header --}}
   <div class="al-header">
     <div>
       <h1 class="al-title">Tra cứu Cựu Sinh Viên</h1>
@@ -105,22 +134,7 @@
   </div>
 
   <div class="al-card">
-    {{-- Alerts --}}
-    @if(session('success'))
-      <div class="al-alert ok">{{ session('success') }}</div>
-    @endif
 
-    @if($errors->any())
-      <div class="al-alert err">
-        <ul style="margin:0; padding-left:18px;">
-          @foreach($errors->all() as $e)
-            <li>{{ $e }}</li>
-          @endforeach
-        </ul>
-      </div>
-    @endif
-
-    {{-- Toolbar --}}
     <div class="al-toolbar">
       <form class="al-search" method="GET" action="{{ route('alumni.index') }}">
         <input
@@ -128,7 +142,7 @@
           type="text"
           name="q"
           value="{{ $q ?? request('q') }}"
-          placeholder="Nhập từ khóa... (VD: Nguyễn Văn A / 20xxxx / email / 09xx)"
+          placeholder="Nhập từ khóa..."
         />
         <button class="al-btn primary" type="submit">Tìm kiếm</button>
         <a class="al-btn ghost" href="{{ route('alumni.index') }}">Xóa lọc</a>
@@ -142,22 +156,20 @@
       </div>
     </div>
 
-    {{-- Table --}}
     <div class="al-tableWrap">
       <table class="al-table">
         <thead>
           <tr>
-            <th style="width:70px;">#</th>
+            <th>#</th>
             <th>MSSV</th>
             <th>Họ tên</th>
             <th>Email</th>
             <th>SĐT</th>
             <th>Khoa</th>
             <th>Năm TN</th>
-            <th style="width:240px;">Thao tác</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
-
         <tbody>
           @forelse($alumni as $item)
             <tr>
@@ -170,19 +182,19 @@
               <td class="al-muted">{{ $item->graduation_year }}</td>
               <td>
                 <div class="al-rowActions">
-                  <a class="al-btn" style="padding:8px 10px;" href="{{ route('alumni.show', $item) }}">Xem</a>
+                  <a class="al-btn" href="{{ route('alumni.show', $item) }}">Xem</a>
 
                   @if(in_array($role, ['admin','canbokhoa']))
-                    <a class="al-btn ghost" style="padding:8px 10px;" href="{{ route('alumni.edit', $item) }}">Sửa</a>
+                    <a class="al-btn ghost" href="{{ route('alumni.edit', $item) }}">Sửa</a>
 
                     <form
                       action="{{ route('alumni.destroy', $item) }}"
                       method="POST"
-                      onsubmit="return confirm('Bạn chắc chắn muốn xóa cựu sinh viên này?');"
+                      onsubmit="return confirm('Bạn chắc chắn muốn xóa?');"
                     >
                       @csrf
                       @method('DELETE')
-                      <button class="al-btn danger" style="padding:8px 10px;" type="submit">Xóa</button>
+                      <button class="al-btn danger" type="submit">Xóa</button>
                     </form>
                   @endif
                 </div>
@@ -197,11 +209,11 @@
       </table>
     </div>
 
-    {{-- Pagination --}}
-    <div style="margin-top:14px;">
-      {{ $alumni->links('pagination::bootstrap-5') }}
+    <div style="display:flex;justify-content:center;margin-top:16px;">
+      {{ $alumni->onEachSide(1)->links('pagination::default') }}
     </div>
-  </div>
 
+  </div>
 </div>
+
 @endsection
