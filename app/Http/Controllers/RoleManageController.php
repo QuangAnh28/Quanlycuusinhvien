@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
+class RoleManageController extends Controller
+{
+    private array $roles = ['admin', 'canbokhoa', 'cuusinh'];
+    public function index(Request $request)
+    {
+        $q = trim((string) $request->query('q', ''));
+
+        $users = User::query()
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($qq) use ($q) {
+                    $qq->where('name', 'like', "%{$q}%")
+                       ->orWhere('email', 'like', "%{$q}%");
+                });
+            })
+            ->orderByDesc('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('roles.index', [
+            'users' => $users,
+            'roles' => $this->roles,
+            'q'     => $q,
+        ]);
+    }
+    public function update(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'role' => ['required', Rule::in($this->roles)],
+        ]);
+
+        $newRole = $data['role'];
+
+        // 1) Không cho tự hạ quyền chính mình khỏi admin
+        if (auth()->id() === $user->id && $newRole !== 'admin') {
+            return back()->withErrors([
+                'role' => 'You cannot downgrade your own role.',
+            ]);
+        }
+        if ($user->role === 'admin' && auth()->id() !== $user->id) {
+            return back()->withErrors([
+                'role' => 'You cannot change another admin\'s role.',
+            ]);
+        }
+
+        // Nếu role không đổi thì thôi
+        if ($user->role === $newRole) {
+            return back()->with('success', 'No changes.');
+        }
+
+        // Update
+        $user->role = $newRole;
+        $user->save();
+
+        return back()->with('success', 'Role updated successfully.');
+    }
+}
