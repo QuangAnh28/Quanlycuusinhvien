@@ -8,12 +8,18 @@ use App\Models\Event;
 
 class Registration extends Model
 {
-        public function user()
+    protected $fillable = [
+        'user_id',
+        'event_id',
+        'status'
+    ];
+
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-        public function event()
+    public function event()
     {
         return $this->belongsTo(Event::class);
     }

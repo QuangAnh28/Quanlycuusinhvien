@@ -6,7 +6,17 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AlumniController;
 use App\Http\Controllers\AlumniImportController;
 use App\Http\Controllers\RoleManageController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\RegistrationController;
 
+
+Route::get('/events', [EventController::class, 'index'])->name('events.index');
+Route::get('/events/{id}', [EventController::class, 'show'])->name('events.show');
+Route::post('/events/{id}/register', [RegistrationController::class, 'store'])
+    ->name('events.register');
+
+Route::post('/events/{id}/cancel', [RegistrationController::class, 'cancel'])
+    ->name('events.cancel');
 Route::get('/', fn () => redirect()->route('login'));
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
