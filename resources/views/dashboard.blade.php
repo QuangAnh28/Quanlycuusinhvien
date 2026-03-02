@@ -204,7 +204,6 @@
 
     .ptext{line-height:1.15}
     .pname{font-weight:900;font-size:16px}
-    .prole{font-weight:700;font-size:12px;opacity:.9}
     .pchev{width:16px;height:16px;opacity:.9;margin-left:auto}
 
     .profile-menu{
@@ -275,54 +274,62 @@
 </head>
 <body>
   <div class="app">
-@php($role = auth()->user()->role)
+    @php($role = auth()->user()->role)
+
     <!-- SIDEBAR -->
     <aside class="sidebar">
-<nav class="snav">
-  <a class="item active" href="{{ route('dashboard') }}">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M3 11 12 3l9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-    </svg>
-    Tổng Quan
-    <span style="margin-left:auto;opacity:.85;">▾</span>
-  </a>
+      <nav class="snav">
+        <a class="item {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M3 11 12 3l9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1V11Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          Tổng Quan
+          <span style="margin-left:auto;opacity:.85;">▾</span>
+        </a>
 
-  {{-- AI CŨNG THẤY CỰU SINH VIÊN (admin/canbokhoa/cuusinh) --}}
-  <a class="item" href="{{ route('alumni.index') }}">
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/>
-    </svg>
-    Cựu Sinh Viên
-  </a>
+        <a class="item {{ request()->routeIs('alumni.*') ? 'active' : '' }}" href="{{ route('alumni.index') }}">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Cựu Sinh Viên
+        </a>
 
-  {{-- CHỈ admin + canbokhoa thấy Nhập danh sách --}}
-  @if(in_array($role, ['admin','canbokhoa']))
-    <a class="item" href="{{ route('alumni.import.create') }}">
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M8 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path d="M16 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path d="M3 9h18" stroke="currentColor" stroke-width="2"/>
-        <path d="M5 5h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
-      </svg>
-      Nhập danh sách
-    </a>
+        <a class="item {{ request()->routeIs('events.*') ? 'active' : '' }}" href="{{ route('events.index') }}">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M8 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M3 9h18" stroke="currentColor" stroke-width="2"/>
+            <path d="M5 5h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          Sự kiện
+        </a>
 
-    <div class="sep"></div>
-  @endif
+        @if(in_array($role, ['admin','canbokhoa']))
+          <a class="item {{ request()->routeIs('alumni.import.*') ? 'active' : '' }}" href="{{ route('alumni.import.create') }}">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M8 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M16 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 9h18" stroke="currentColor" stroke-width="2"/>
+              <path d="M5 5h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            Nhập danh sách
+          </a>
 
-  {{-- CHỈ admin thấy Phân quyền --}}
-  @if($role === 'admin')
-    <a class="item" href="{{ route('roles.index') }}">
-      <svg viewBox="0 0 24 24" fill="none">
-        <path d="M7 12a5 5 0 0 1 10 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path d="M12 21a9 9 0 1 0-9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        <path d="M22 4 12 14l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Phân quyền
-    </a>
-  @endif
-</nav>
+          <div class="sep"></div>
+        @endif
+
+        @if($role === 'admin')
+          <a class="item {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M7 12a5 5 0 0 1 10 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M12 21a9 9 0 1 0-9-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M22 4 12 14l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Phân quyền
+          </a>
+        @endif
+      </nav>
 
       <div class="side-illu"></div>
     </aside>
@@ -416,8 +423,8 @@
 
       <!-- CONTENT -->
       <section class="content">
-  @yield('content')
-</section>
+        @yield('content')
+      </section>
     </main>
   </div>
 
