@@ -8,10 +8,29 @@ use App\Http\Controllers\AlumniImportController;
 use App\Http\Controllers\RoleManageController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\PostController;
+
 
 
 
 Route::middleware('auth')->group(function () {
+
+    
+   // Ai đăng nhập cũng xem được
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+
+    // CHỈ ADMIN được CRUD
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+        Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+
+        Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('posts.edit');
+        Route::put('/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+        Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    });
+
+    // ĐỂ CUỐI CÙNG (tránh nuốt create/edit)
+    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 
     // CRUD routes phải đặt trước route {id}
     Route::get('/events/create', [EventController::class, 'create'])->name('events.create');

@@ -204,7 +204,6 @@
 
     .ptext{line-height:1.15}
     .pname{font-weight:900;font-size:16px}
-    .prole{font-weight:700;font-size:12px;opacity:.9}
     .pchev{width:16px;height:16px;opacity:.9;margin-left:auto}
 
     .profile-menu{
@@ -272,6 +271,15 @@
             <path d="M5 5h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2"/>
           </svg>
           Sự kiện
+        </a>
+
+        {{-- ✅ TIN TỨC: ai đăng nhập cũng xem được --}}
+        <a class="item {{ request()->routeIs('posts.*') ? 'active' : '' }}" href="{{ route('posts.index') }}">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M7 7h10M7 11h10M7 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M5 3h14a2 2 0 0 1 2 2v14l-4-2-4 2-4-2-4 2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          Tin tức
         </a>
 
         @if(in_array($role, ['admin','canbokhoa']))

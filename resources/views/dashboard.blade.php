@@ -305,6 +305,15 @@
           Sự kiện
         </a>
 
+        {{-- ✅ THÊM TIN TỨC --}}
+        <a class="item {{ request()->routeIs('posts.*') ? 'active' : '' }}" href="{{ route('posts.index') }}">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M7 7h10M7 11h10M7 15h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M5 3h14a2 2 0 0 1 2 2v14l-4-2-4 2-4-2-4 2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+          Tin tức
+        </a>
+
         @if(in_array($role, ['admin','canbokhoa']))
           <a class="item {{ request()->routeIs('alumni.import.*') ? 'active' : '' }}" href="{{ route('alumni.import.create') }}">
             <svg viewBox="0 0 24 24" fill="none">
