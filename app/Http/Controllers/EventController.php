@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\User;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -41,7 +43,34 @@ class EventController extends Controller
 
         $data['created_by'] = auth()->id();
 
-        Event::create($data);
+        $event = Event::create($data);
+
+        // ✅ TẠO THÔNG BÁO CHO TẤT CẢ CỰU SINH VIÊN
+        $title = 'Sự kiện mới: ' . $event->title;
+
+        $msg = 'Bắt đầu: ' . \Carbon\Carbon::parse($event->start_at)->format('d/m/Y H:i');
+        if (!empty($event->location)) $msg .= ' • Địa điểm: ' . $event->location;
+
+        User::where('role', 'cuusinh')
+            ->select('id')
+            ->chunkById(200, function ($users) use ($title, $msg) {
+                $rows = [];
+                $now = now();
+                foreach ($users as $u) {
+                    $rows[] = [
+                        'user_id' => $u->id,
+                        'title' => $title,
+                        'message' => $msg,
+                        'type' => 'event',
+                        'is_read' => false,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
+                if (!empty($rows)) {
+                    Notification::insert($rows);
+                }
+            });
 
         return redirect()->route('events.index')->with('success', 'Tạo sự kiện thành công!');
     }
