@@ -26,40 +26,45 @@ class AlumniController extends Controller
 
         return view('alumni.index', compact('alumni', 'q'));
     }
+
     public function show(Alumni $alumni)
     {
         return view('alumni.show', compact('alumni'));
     }
+
     public function create()
     {
         return view('alumni.create');
     }
+
     public function store(Request $request)
     {
         $data = $this->validatedData($request);
-
         Alumni::create($data);
 
         return redirect()->route('alumni.index')->with('success', 'Đã thêm cựu sinh viên.');
     }
+
     public function edit(Alumni $alumni)
     {
         return view('alumni.edit', compact('alumni'));
     }
+
     public function update(Request $request, Alumni $alumni)
     {
         $data = $this->validatedData($request);
-
         $alumni->update($data);
 
-        return redirect()->route('alumni.index')->with('success', 'Đã cập nhật cựu sinh viên.');
+        // nên redirect về trang xem để thấy ngay dữ liệu vừa cập nhật
+        return redirect()->route('alumni.show', $alumni)->with('success', 'Đã cập nhật cựu sinh viên.');
     }
+
     public function destroy(Alumni $alumni)
     {
         $alumni->delete();
-
         return redirect()->route('alumni.index')->with('success', 'Đã xóa cựu sinh viên.');
     }
+
     private function validatedData(Request $request): array
     {
         return $request->validate([

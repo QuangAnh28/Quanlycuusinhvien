@@ -24,17 +24,24 @@
         </div>
     </div>
 
+    @if(session('success'))
+        <div
+            style="margin-bottom:12px;padding:12px 14px;border-radius:12px;background:rgba(16,185,129,.10);border:1px solid rgba(16,185,129,.20);font-weight:800;">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div
         style="background:#fff;border-radius:16px;padding:16px;border:1px solid rgba(0,0,0,.06);box-shadow:0 10px 26px rgba(10,24,60,.10);">
-        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;">
             <div>
                 <div style="opacity:.7;font-weight:800;">MSSV</div>
-                <div style="font-weight:900;margin-top:6px;">{{ $alumni->mssv ?? '-' }}</div>
+                <div style="font-weight:900;margin-top:6px;">{{ $alumni->student_code ?? '-' }}</div>
             </div>
 
             <div>
                 <div style="opacity:.7;font-weight:800;">Họ tên</div>
-                <div style="font-weight:900;margin-top:6px;">{{ $alumni->ho_ten ?? $alumni->name ?? '-' }}</div>
+                <div style="font-weight:900;margin-top:6px;">{{ $alumni->full_name ?? '-' }}</div>
             </div>
 
             <div>
@@ -44,26 +51,37 @@
 
             <div>
                 <div style="opacity:.7;font-weight:800;">SĐT</div>
-                <div style="font-weight:900;margin-top:6px;">{{ $alumni->sdt ?? $alumni->phone ?? '-' }}</div>
+                <div style="font-weight:900;margin-top:6px;">{{ $alumni->phone ?? '-' }}</div>
             </div>
 
             <div>
                 <div style="opacity:.7;font-weight:800;">Khoa</div>
-                <div style="font-weight:900;margin-top:6px;">{{ $alumni->khoa ?? '-' }}</div>
+                <div style="font-weight:900;margin-top:6px;">{{ $alumni->faculty ?? '-' }}</div>
             </div>
 
             <div>
                 <div style="opacity:.7;font-weight:800;">Năm tốt nghiệp</div>
-                <div style="font-weight:900;margin-top:6px;">{{ $alumni->nam_tn ?? $alumni->nam_tot_nghiep ?? '-' }}</div>
+                <div style="font-weight:900;margin-top:6px;">{{ $alumni->graduation_year ?? '-' }}</div>
             </div>
-        </div>
 
-        <div style="margin-top:14px;height:1px;background:rgba(0,0,0,.06);"></div>
+            <div>
+                <div style="opacity:.7;font-weight:800;">Ngành</div>
+                <div style="font-weight:900;margin-top:6px;">{{ $alumni->major ?? '-' }}</div>
+            </div>
 
-        <div style="margin-top:14px;">
-            <div style="opacity:.7;font-weight:800;">Ghi chú / Mô tả</div>
-            <div style="margin-top:8px;line-height:1.6;">
-                {{ $alumni->mo_ta ?? $alumni->note ?? '—' }}
+            <div>
+                <div style="opacity:.7;font-weight:800;">Công việc</div>
+                <div style="font-weight:900;margin-top:6px;">{{ $alumni->job ?? '-' }}</div>
+            </div>
+
+            <div>
+                <div style="opacity:.7;font-weight:800;">Công ty</div>
+                <div style="font-weight:900;margin-top:6px;">{{ $alumni->company ?? '-' }}</div>
+            </div>
+
+            <div>
+                <div style="opacity:.7;font-weight:800;">Địa chỉ</div>
+                <div style="font-weight:900;margin-top:6px;">{{ $alumni->address ?? '-' }}</div>
             </div>
         </div>
     </div>
