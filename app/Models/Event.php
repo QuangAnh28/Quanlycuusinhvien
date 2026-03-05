@@ -20,11 +20,11 @@ class Event extends Model
 
     public function registrations()
     {
-        return $this->hasMany(Registration::class);
+        return $this->hasMany(\App\Models\Registration::class, 'event_id');
     }
 
     public function creator()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
     }
 }

@@ -326,7 +326,7 @@
 
 <body>
   <div class="app">
-    @php($role = auth()->user()->role)
+    @php($role = auth()->check() ? auth()->user()->role : null)
 
     <aside class="sidebar">
       <nav class="snav">
@@ -336,7 +336,6 @@
               stroke-width="2" stroke-linejoin="round" />
           </svg>
           Tổng Quan
-          <span style="margin-left:auto;opacity:.85;">▾</span>
         </a>
 
         <a class="item {{ request()->routeIs('alumni.*') ? 'active' : '' }}" href="{{ route('alumni.index') }}">
@@ -368,20 +367,16 @@
           Tin tức
         </a>
 
-        {{-- Hồ sơ: chỉ cuusinh --}}
-        @if($role === 'cuusinh')
-          @if(\Illuminate\Support\Facades\Route::has('profile.show'))
-            <a class="item {{ request()->routeIs('profile.*') ? 'active' : '' }}" href="{{ route('profile.show') }}">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M20 21a8 8 0 1 0-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                <path d="M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2" />
-              </svg>
-              Hồ sơ
-            </a>
-          @endif
+        @if($role === 'cuusinh' && \Illuminate\Support\Facades\Route::has('profile.show'))
+          <a class="item {{ request()->routeIs('profile.*') ? 'active' : '' }}" href="{{ route('profile.show') }}">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M20 21a8 8 0 1 0-16 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path d="M12 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="currentColor" stroke-width="2" />
+            </svg>
+            Hồ sơ
+          </a>
         @endif
 
-        {{-- Thống kê: admin + canbokhoa + cuusinh --}}
         @if(in_array($role, ['admin', 'canbokhoa', 'cuusinh']) && \Illuminate\Support\Facades\Route::has('stats.index'))
           <a class="item {{ request()->routeIs('stats.*') ? 'active' : '' }}" href="{{ route('stats.index') }}">
             <svg viewBox="0 0 24 24" fill="none">
@@ -395,7 +390,7 @@
           </a>
         @endif
 
-        @if(in_array($role, ['admin', 'canbokhoa']))
+        @if(in_array($role, ['admin', 'canbokhoa']) && \Illuminate\Support\Facades\Route::has('alumni.import.create'))
           <a class="item {{ request()->routeIs('alumni.import.*') ? 'active' : '' }}"
             href="{{ route('alumni.import.create') }}">
             <svg viewBox="0 0 24 24" fill="none">
@@ -410,7 +405,7 @@
           <div class="sep"></div>
         @endif
 
-        @if($role === 'admin')
+        @if($role === 'admin' && \Illuminate\Support\Facades\Route::has('roles.index'))
           <a class="item {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
             <svg viewBox="0 0 24 24" fill="none">
               <path d="M7 12a5 5 0 0 1 10 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -493,7 +488,7 @@
               </div>
 
               <div class="ptext">
-                <div class="pname">{{ auth()->user()->name }}</div>
+                <div class="pname">{{ auth()->check() ? auth()->user()->name : 'User' }}</div>
               </div>
 
               <svg class="pchev" viewBox="0 0 24 24" fill="none">
