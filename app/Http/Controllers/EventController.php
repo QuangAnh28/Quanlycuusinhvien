@@ -23,13 +23,13 @@ class EventController extends Controller
 
     public function create()
     {
-        $this->ensureAdmin();
+        $this->ensureManager();
         return view('events.create');
     }
 
     public function store(Request $request)
     {
-        $this->ensureAdmin();
+        $this->ensureManager();
 
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
@@ -45,39 +45,31 @@ class EventController extends Controller
 
         $event = Event::create($data);
 
-        // ✅ TẠO THÔNG BÁO CHO TẤT CẢ CỰU SINH VIÊN
         $title = 'Sự kiện mới: ' . $event->title;
 
-        $msg = 'Bắt đầu: ' . \Carbon\Carbon::parse($event->start_at)->format('d/m/Y H:i');
-        if (!empty($event->location)) $msg .= ' • Địa điểm: ' . $event->location;
+        $message = 'Bắt đầu: ' . \Carbon\Carbon::parse($event->start_at)->format('d/m/Y H:i');
+        if (!empty($event->location)) {
+            $message .= ' • Địa điểm: ' . $event->location;
+        }
 
-        User::where('role', 'cuusinh')
-            ->select('id')
-            ->chunkById(200, function ($users) use ($title, $msg) {
-                $rows = [];
-                $now = now();
-                foreach ($users as $u) {
-                    $rows[] = [
-                        'user_id' => $u->id,
-                        'title' => $title,
-                        'message' => $msg,
-                        'type' => 'event',
-                        'is_read' => false,
-                        'created_at' => $now,
-                        'updated_at' => $now,
-                    ];
-                }
-                if (!empty($rows)) {
-                    Notification::insert($rows);
-                }
-            });
+        $receivers = User::where('role', 'cuusinh')->get();
+
+        foreach ($receivers as $user) {
+            Notification::create([
+                'user_id' => $user->id,
+                'title' => $title,
+                'message' => $message,
+                'type' => 'event',
+                'is_read' => false,
+            ]);
+        }
 
         return redirect()->route('events.index')->with('success', 'Tạo sự kiện thành công!');
     }
 
     public function edit($id)
     {
-        $this->ensureAdmin();
+        $this->ensureManager();
 
         $event = Event::findOrFail($id);
         return view('events.edit', compact('event'));
@@ -85,7 +77,7 @@ class EventController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->ensureAdmin();
+        $this->ensureManager();
 
         $event = Event::findOrFail($id);
 
@@ -106,7 +98,7 @@ class EventController extends Controller
 
     public function destroy($id)
     {
-        $this->ensureAdmin();
+        $this->ensureManager();
 
         $event = Event::findOrFail($id);
         $event->delete();
@@ -116,7 +108,7 @@ class EventController extends Controller
 
     public function toggleStatus($id)
     {
-        $this->ensureAdmin();
+        $this->ensureManager();
 
         $event = Event::findOrFail($id);
         $event->status = $event->status === 'open' ? 'closed' : 'open';
@@ -125,8 +117,11 @@ class EventController extends Controller
         return back()->with('success', 'Đã đổi trạng thái sự kiện!');
     }
 
-    private function ensureAdmin(): void
+    private function ensureManager(): void
     {
-        abort_unless(auth()->check() && auth()->user()->role === 'admin', 403);
+        abort_unless(
+            auth()->check() && in_array(auth()->user()->role, ['admin', 'canbokhoa']),
+            403
+        );
     }
 }
