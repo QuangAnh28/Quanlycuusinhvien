@@ -17,6 +17,17 @@
       Cựu Sinh Viên
     </a>
 
+    @if(in_array($role, ['admin','canbokhoa']) && \Illuminate\Support\Facades\Route::has('alumni.faculties'))
+      <a class="item {{ request()->routeIs('alumni.faculties') || request()->routeIs('alumni.faculty') ? 'active' : '' }}" href="{{ route('alumni.faculties') }}">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M3 7h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 12h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3 17h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Danh sách theo khoa
+      </a>
+    @endif
+
     <a class="item {{ request()->routeIs('events.*') ? 'active' : '' }}" href="{{ route('events.index') }}">
       <svg viewBox="0 0 24 24" fill="none">
         <path d="M8 2v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>

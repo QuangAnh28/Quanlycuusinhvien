@@ -10,19 +10,18 @@
   .titlex{margin:0;font-size:28px;font-weight:900;letter-spacing:-.02em}
   .subx{margin:8px 0 0;opacity:.7}
   .rowx{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:14px}
-  .inputx{padding:11px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.12);min-width:260px;flex:1}
+  .inputx{padding:11px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.12);min-width:160px;flex:1}
   .btnx{padding:10px 12px;border-radius:12px;border:1px solid rgba(0,0,0,.12);background:#fff;font-weight:800;cursor:pointer;text-decoration:none}
   .btnx.primary{background:#0b5fff;color:#fff;border-color:#0b5fff}
   .alertx{border-radius:14px;padding:10px 12px;margin-top:12px}
   .ok{background:#eaffea;border:1px solid #bfe7bf}
   .err{background:#ffecec;border:1px solid #f2b8b8}
   .tableWrap{margin-top:12px;overflow:auto;border:1px solid rgba(0,0,0,.08);border-radius:14px}
-  table{width:100%;border-collapse:collapse;min-width:900px}
+  table{width:100%;border-collapse:collapse;min-width:1100px}
   th{background:rgba(0,0,0,.03);text-align:left;padding:12px;font-size:13px;text-transform:uppercase;opacity:.8}
   td{padding:12px;border-top:1px solid rgba(0,0,0,.06)}
   .muted{opacity:.7}
 
-  /* ===== Pagination đẹp (áp cho pagination::default của Laravel) ===== */
   .pagination{
     display:flex;
     justify-content:center;
@@ -97,6 +96,7 @@
             <th>Tên</th>
             <th>Email</th>
             <th style="width:220px;">Role</th>
+            <th style="width:220px;">Khoa</th>
             <th style="width:160px;">Thao tác</th>
           </tr>
         </thead>
@@ -108,29 +108,34 @@
               <td style="font-weight:800;">{{ $u->name }}</td>
               <td class="muted">{{ $u->email }}</td>
 
-              {{-- 1 ROW = 1 FORM (mở ở cột role, đóng ở cột thao tác) --}}
-              <td>
+              <td colspan="3">
                 <form method="POST"
                       action="{{ route('roles.update', $u) }}"
-                      style="display:flex; gap:10px; align-items:center;">
+                      style="display:grid; grid-template-columns: 220px 220px 160px; gap:10px; align-items:center;">
                   @csrf
                   @method('PUT')
 
-                  <select name="role" class="inputx" style="min-width:180px; flex:none;">
+                  <select name="role" class="inputx" style="min-width:180px;">
                     @foreach($roles as $r)
                       <option value="{{ $r }}" @selected($u->role === $r)>{{ ucfirst($r) }}</option>
                     @endforeach
                   </select>
-              </td>
 
-              <td>
+                  <select name="faculty" class="inputx" style="min-width:180px;">
+                    <option value="">-- Chọn khoa --</option>
+                    <option value="CNTT" @selected($u->faculty === 'CNTT')>CNTT</option>
+                    <option value="KETOAN" @selected($u->faculty === 'KETOAN')>Kế toán</option>
+                    <option value="QTKD" @selected($u->faculty === 'QTKD')>QTKD</option>
+                    <option value="COKHI" @selected($u->faculty === 'COKHI')>Cơ khí</option>
+                  </select>
+
                   <button class="btnx primary" type="submit">Cập nhật</button>
                 </form>
               </td>
             </tr>
           @empty
             <tr>
-              <td colspan="5" class="muted" style="text-align:center;padding:16px;">
+              <td colspan="6" class="muted" style="text-align:center;padding:16px;">
                 Không có user.
               </td>
             </tr>

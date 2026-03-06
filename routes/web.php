@@ -13,9 +13,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\NotificationController;
 
-
 Route::get('/notifications-page', [NotificationController::class, 'index'])
     ->name('notifications.page');
+
 /*
 |--------------------------------------------------------------------------
 | Public routes
@@ -56,7 +56,7 @@ Route::middleware('guest')->group(function () {
 */
 Route::middleware('auth')->group(function () {
 
-     Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
         ->name('notifications.unreadCount');
 
     Route::get('/notifications', [NotificationController::class, 'latest'])
@@ -155,6 +155,10 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:admin,canbokhoa,cuusinh')->group(function () {
         Route::get('/alumni', [AlumniController::class, 'index'])->name('alumni.index');
         Route::get('/alumni/{alumni}', [AlumniController::class, 'show'])->name('alumni.show');
+
+        // Danh sách theo khoa
+        Route::get('/alumni-faculties', [AlumniController::class, 'faculties'])->name('alumni.faculties');
+        Route::get('/alumni/faculty/{faculty}', [AlumniController::class, 'facultyList'])->name('alumni.faculty');
     });
 
     Route::middleware('role:admin,canbokhoa')->group(function () {

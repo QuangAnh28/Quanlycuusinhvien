@@ -40,10 +40,12 @@
     <input class="f-input" name="phone" value="{{ old('phone', $alumni->phone ?? '') }}">
   </div>
 
-  <div class="f-item">
-    <label>Khoa</label>
-    <input class="f-input" name="faculty" value="{{ old('faculty', $alumni->faculty ?? '') }}">
-  </div>
+  @if($role === 'admin')
+    <div class="f-item">
+      <label>Khoa</label>
+      <input class="f-input" name="faculty" value="{{ old('faculty', $alumni->faculty ?? '') }}">
+    </div>
+  @endif
 
   <div class="f-item">
     <label>Lớp / Ngành</label>
