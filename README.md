@@ -57,7 +57,7 @@ DB_PASSWORD=<pass_db_local>
 
 ### 5. Chạy migrations và seeders
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
 ### 6. Cài đặt npm dependencies
@@ -87,7 +87,9 @@ routes
 database
  └── migrations
 ```
-
+### 8. Tài khoản Admin sẵn có
+- **Tk:admin@gmail.com
+- **Pass:123456
 ---
 
 
